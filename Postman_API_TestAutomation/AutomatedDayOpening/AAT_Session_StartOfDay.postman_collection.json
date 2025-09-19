@@ -1,0 +1,909 @@
+{
+	"info": {
+		"_postman_id": "a4f41c2b-8f96-423b-8ca5-e20784bff569",
+		"name": "Automated API Testing - [Session/StartOfDay] - ANONYMIZED",
+	},
+	"item": [
+		{
+			"name": "Get Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/webpos-poc/login",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"webpos-poc",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get translation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Translations/merged/en",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Translations",
+						"merged",
+						"en"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AppVersion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AppVersion",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AppVersion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var codeValue = pm.response.json().code;",
+							"pm.environment.set(\"POS_CODE\", codeValue);",
+							"console.log(\"Zapisana zmienna POS_CODE:\", pm.collectionVariables.get(\"POS_CODE\"));",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/address/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"address",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logowanie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Is login successful?\", function() {",
+							"    const result = pm.response.json().result;",
+							"    pm.expect(result).to.eql(\"LoginSuccessful\");",
+							"    if (result !== \"LoginSuccessful\") {",
+							"        throw new Error(\"Błędne dane logowania lub brak połączenia\");",
+							"    }",
+							"});",
+							"var USER_ID = pm.response.json().userId;",
+							"pm.environment.set(\"USER_ID\", USER_ID);",
+							"var JWT_TOKEN = pm.response.json().jwt.jwtToken;",
+							"pm.environment.set(\"JWT_TOKEN\", JWT_TOKEN);",
+							"if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.json().result === \"LoginSuccessful\") {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"loginName\":\"{{Login}}\",\"password\":\"{{Password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Login/userauth/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Login",
+						"userauth",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var guid = pm.response.json().guid;",
+							"pm.environment.set(\"guid\", guid);",
+							"console.log(\"Zapisana zmienna guid:\", pm.environment.get(\"guid\"));",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get POS data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}",
+							"var POS_ID = pm.response.json().id;",
+							"pm.environment.set(\"POS_ID\", POS_ID);",
+							"console.log(\"POS_ID ustawione na:\", POS_ID);",
+							"var COMPANY_UNIT_ID = pm.response.json().companyUnitId;",
+							"pm.environment.set(\"COMPANY_UNIT_ID\", COMPANY_UNIT_ID);",
+							"console.log(\"COMPANY_UNIT_ID ustawione na:\", COMPANY_UNIT_ID);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get forBrowserStorage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "pos-id",
+						"value": "{{POS_ID}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{POS_CODE}}",
+						"type": "text"
+					},
+					{
+						"key": "company-unit-id",
+						"value": "{{COMPANY_UNIT_ID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/forBrowserStorage",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"forBrowserStorage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "isLastSessionClosed",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const responseText = pm.response.text();",
+							"    if (responseText === 'true') {",
+							"        console.log(\"Odpowiedź to TRUE. Przechodzę do requestu 'CreateSession'.\");",
+							"        pm.environment.set(\"previousRequestSuccessful\", true);",
+							"        pm.execution.setNextRequest(\"CreateSession\");",
+							"    } else {",
+							"        console.error(\"Odpowiedź to FALSE. Zatrzymuję wykonywanie kolekcji.\");",
+							"        pm.environment.set(\"previousRequestSuccessful\", false);",
+							"        pm.execution.setNextRequest(null);",
+							"    }",
+							"} else {",
+							"    console.error(`Request zwrócił błąd HTTP ${pm.response.code}. Zatrzymuję wykonywanie kolekcji.`);",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"    pm.execution.setNextRequest(null);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/isLastSessionClosed/{{POS_ID}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"isLastSessionClosed",
+						"{{POS_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSession",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const now = new Date();",
+							"const year = now.getFullYear();",
+							"const month = String(now.getMonth() + 1).padStart(2, '0');",
+							"const day = String(now.getDate()).padStart(2, '0');",
+							"const hours = String(now.getHours()).padStart(2, '0');",
+							"const minutes = String(now.getMinutes()).padStart(2, '0');",
+							"const seconds = String(now.getSeconds()).padStart(2, '0');",
+							"const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;",
+							"pm.environment.set(\"current_local_date\", localDateTime);",
+							"console.log(\"Ustawiona data lokalna:\", localDateTime);",
+							"console.log(\"Zapisana data:\", pm.environment.get(\"current_local_date\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "pos-id",
+						"value": "{{POS_ID}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{POS_CODE}}",
+						"type": "text"
+					},
+					{
+						"key": "company-unit-id",
+						"value": "{{COMPANY_UNIT_ID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"openingDate\":\"{{current_local_date}}\",\"assistantIdAtStart\":95,\"stampId\":1595,\"posId\":{{POS_ID}},\"posCode\":\"{{POS_CODE}}\",\"sessionElements\":[{\"currencyId\":1,\"currency\":\"Euro\",\"cashRegisterBalanceAtStart\":0,\"actualBalance\":0,\"difference\":0,\"depositAtStart\":0,\"paymentFormId\":11,\"isSystem\":true,\"differenceDetails\":[],\"isReasonForDifferenceGiven\":false,\"finalBalance\":0}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/create",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wysyłka maila - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"postman.setNextRequest(null);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/gmail.send",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{google_client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{google_client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"raw\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+					"protocol": "https",
+					"host": [
+						"gmail",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"gmail",
+						"v1",
+						"users",
+						"me",
+						"messages",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wysyłka maila - failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"postman.setNextRequest(null);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/gmail.send",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "{{google_client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{google_client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"raw\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+					"protocol": "https",
+					"host": [
+						"gmail",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"gmail",
+						"v1",
+						"users",
+						"me",
+						"messages",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "POS_CODE",
+			"value": ""
+		},
+		{
+			"key": "USER_ID",
+			"value": ""
+		},
+		{
+			"key": "JWT_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "guid",
+			"value": ""
+		},
+		{
+			"key": "POS_ID",
+			"value": ""
+		},
+		{
+			"key": "COMPANY_UNIT_ID",
+			"value": ""
+		}
+	]
+}

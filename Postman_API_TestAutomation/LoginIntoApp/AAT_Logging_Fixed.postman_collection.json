@@ -1,0 +1,692 @@
+{
+	"info": {
+		"_postman_id": "83cf9d0b-9455-4b59-808c-ef8e1b5edfcb",
+		"name": "Automated API Testing - [LogIn] (fixed component) - ANONYMIZED",
+	},
+	"item": [
+		{
+			"name": "Get Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"startTime\", new Date().getTime());",
+							"console.log(\"Czas rozpoczęcia: \" + new Date().toISOString());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/webpos-poc/login",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"webpos-poc",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get translation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Translations/merged/en",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Translations",
+						"merged",
+						"en"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AppVersion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AppVersion",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AppVersion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"    var codeValue = pm.response.json().code;",
+							"    pm.environment.set(\"POS_CODE\", codeValue);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/address/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"address",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logowanie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Sprawdzenie logowania, zapisanie zmiennych i ustawienie flagi\", function () {",
+							"    try {",
+							"        const jsonData = pm.response.json();",
+							"        pm.response.to.have.status(200);",
+							"        pm.expect(jsonData.result, \"Odpowiedź serwera nie wskazuje na sukces logowania\").to.eql(\"LoginSuccessful\");",
+							"        pm.environment.set(\"USER_ID\", jsonData.userId);",
+							"        pm.environment.set(\"JWT_TOKEN\", jsonData.jwt.jwtToken);",
+							"        pm.environment.set(\"previousRequestSuccessful\", true);",
+							"    } catch (e) {",
+							"        pm.environment.set(\"previousRequestSuccessful\", false);",
+							"        throw e;",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"loginName\":\"{{Login}}\",\"password\":\"{{Password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Login/userauth/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Login",
+						"userauth",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"Zapisana zmienna guid:\", pm.environment.get(\"guid\"));",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"    var guid = pm.response.json().guid;",
+							"    pm.environment.set(\"guid\", guid);",
+							"    console.log(\"Zapisana zmienna guid:\", pm.environment.get(\"guid\"));",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get POS data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code >= 200 && pm.response.code < 300) {",
+							"    var POS_ID = pm.response.json().id;",
+							"    pm.environment.set(\"POS_ID\", POS_ID);",
+							"    console.log(\"POS_ID ustawione na:\", POS_ID);",
+							"    var COMPANY_UNIT_ID = pm.response.json().companyUnitId;",
+							"    pm.environment.set(\"COMPANY_UNIT_ID\", COMPANY_UNIT_ID);",
+							"    console.log(\"COMPANY_UNIT_ID ustawione na:\", COMPANY_UNIT_ID);",
+							"} else {",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get forBrowserStorage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var startTime = pm.environment.get(\"startTime\");",
+							"var endTime = new Date().getTime();",
+							"var totalTime = endTime - startTime;",
+							"var seconds = Math.floor(totalTime / 1000);",
+							"var milliseconds = totalTime % 1000;",
+							"console.log(\"Całkowity czas wykonania: \" + seconds + \".\" + milliseconds + \" s\");",
+							"pm.environment.set(\"totalExecutionTime\", totalTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "pos-id",
+						"value": "{{POS_ID}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{POS_CODE}}",
+						"type": "text"
+					},
+					{
+						"key": "company-unit-id",
+						"value": "{{COMPANY_UNIT_ID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/forBrowserStorage",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"forBrowserStorage"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "POS_CODE",
+			"value": ""
+		},
+		{
+			"key": "USER_ID",
+			"value": ""
+		},
+		{
+			"key": "JWT_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "guid",
+			"value": ""
+		},
+		{
+			"key": "POS_ID",
+			"value": ""
+		},
+		{
+			"key": "COMPANY_UNIT_ID",
+			"value": ""
+		}
+	]
+}

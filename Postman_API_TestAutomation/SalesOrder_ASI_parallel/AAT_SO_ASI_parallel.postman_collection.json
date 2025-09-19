@@ -1,0 +1,3375 @@
+{
+	"info": {
+		"_postman_id": "3a55430e-81f9-49f2-af6f-5f497b1314f7",
+		"name": "Automated API Testing - [Sales Orders + ASI Creation] - parallel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+},
+	"item": [
+		{
+			"name": "ClickOnSalesOrderFromDashboard",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"startTime\", new Date().getTime());\r",
+							"console.log(\"Czas rozpoczęcia: \" + new Date().toISOString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    const TOTAL_REQUESTS = 8; \r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"Get CachedPermissions\"; \r",
+							"\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const localHost = pm.environment.get(\"local_host\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/SalesOrder/getSalesOrdersFilters`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Session/isLastSessionClosed/${posId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${localHost}/DeviceServer/GetWorkstationInfo`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/PointOfSales/address/${posId}`, header: requestHeaders },\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/SalesOrder/anyNewSalesOrdersExistOnline`, header: requestHeaders },\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/SalesOrder/getSalesOrdersRows`, header: requestHeaders, \r",
+							"        body: \r",
+							"            {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify ({\r",
+							"            \"page\":1,\"pageSize\":50,\"sortColumn\":\"ConfirmationDate\",\"sortDirection\":\"Descending\",\"salesOrderRowColumns\":[\"DocumentNumber\",\"AffectedDocuments\",\"ReferenceNumber\",\"ConfirmationDate\",\"Delivery\",\"DeliveryStatus\",\"DeliveryDate\",\"CustomerName\",\"Amount\",\"Status\"],\"attributeClassIdsAsColumns\":[145,147,146,148],\"filters\":{\"searchMode\":\"MyStore\"}})\r",
+							"            } \r",
+							"        },\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/SalesOrder/getParkedSalesOrdersRows`, header: requestHeaders, \r",
+							"        body: \r",
+							"            {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify ({\r",
+							"            \"page\":1,\"pageSize\":50,\"sortColumn\":\"ConfirmationDate\",\"sortDirection\":\"Descending\",\"salesOrderRowColumns\":[\"DocumentNumber\",\"AffectedDocuments\",\"ReferenceNumber\",\"ConfirmationDate\",\"Delivery\",\"DeliveryStatus\",\"DeliveryDate\",\"CustomerName\",\"Amount\",\"Status\"],\"attributeClassIdsAsColumns\":[145,147,146,148],\"filters\":{\"searchMode\":\"MyStore\"}})\r",
+							"            } \r",
+							"        },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Currency/system`, header: requestHeaders }\r",
+							"    ]; \r",
+							"\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); // BŁĄD = Flaga na false\r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get CachedPermissions",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/User/cachedPermissions/SalesOrder",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"User",
+						"cachedPermissions",
+						"SalesOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get CachedPermissions Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/User/cachedPermissions/SalesOrder",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"User",
+						"cachedPermissions",
+						"SalesOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrderAttributeClasses",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickOnSalesOrderCreation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"document_id\", jsonData.result.id);\r",
+							"\r",
+							"    const TOTAL_REQUESTS =11; \r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"GetCardTypes\"; \r",
+							"    \r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"    const documentId = pm.environment.get(\"document_id\");\r",
+							"\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Settings/byNameAndPos/DeliveryDateModeForSalesOrders/${posId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Settings/byNameAndPos/EnableExternalPickupPoint/${posId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Settings/byNameAndPos/EnableCourierParcel/${posId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/SalesOrder?documentId=${documentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/TradeDocument/settings/maxUserDiscount`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Session/isLastSessionClosed/${posId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/SalesOrder/getSalesOrdersFilters`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/SalesOrder/discountStructure?documentId=${documentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/DiscountEngine/bundles/${documentId}`, header: requestHeaders },\r",
+							"\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/SalesOrder/storePickups`, header: requestHeaders, \r",
+							"        body: \r",
+							"            {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify ({\r",
+							"            \"searchPhrase\":null,\r",
+							"            \"sortDirection\":null,\r",
+							"            \"sortColumn\":null})\r",
+							"            } \r",
+							"        },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Coupon/availableCoupons?pageSize=20&offset=0&searchPhrase=&customerId=87&defaultUser=true`, header: requestHeaders }\r",
+							"    ]; \r",
+							"\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); /\r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"   pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/create",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCardTypes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Loyalty/cardTypes",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Loyalty",
+						"cardTypes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddLoyaltyCard",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/updateDocumentLoyaltyCard?loyaltyCardNumber={{loyalty_card}}&documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"updateDocumentLoyaltyCard"
+					],
+					"query": [
+						{
+							"key": "loyaltyCardNumber",
+							"value": "{{loyalty_card}}"
+						},
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLoyaltyCardInformation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"customerId\", jsonData.customerId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/LoyaltyCardInformationByLoyaltyCard/{{loyalty_card}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"LoyaltyCardInformationByLoyaltyCard",
+						"{{loyalty_card}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChangeCustomer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"customer_guid\", jsonData.result.purchaserData.guid);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/changeCustomer?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"changeCustomer"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickOnDeliveryMetod",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    const TOTAL_REQUESTS =5; \r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"ChangeDelivery\"; \r",
+							"\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const localHost = pm.environment.get(\"local_host\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"    const documentId = pm.environment.get(\"document_id\");\r",
+							"    const customerGuid = pm.environment.get(\"customer_guid\");\r",
+							"    const customerId = pm.environment.get(\"customerId\");\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Customers/AddressTypes`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Customers/Countries`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Customers/FieldValidationMasks?CustomerColumnsToValidate=ZipCode&CustomerColumnsToValidate=City&CustomerColumnsToValidate=Street&CustomerColumnsToValidate=BuildingNumber`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Customers/${customerId}?customerGuid=${customerGuid}`, header: requestHeaders },\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/SalesOrder/storePickups`, header: requestHeaders, \r",
+							"        body: \r",
+							"            {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify ({\r",
+							"            \"sortDirection\":\"Ascending\",\r",
+							"            \"sortColumn\":\"Name\"})\r",
+							"            } \r",
+							"        }\r",
+							"        \r",
+							"    ]; \r",
+							"\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); // \r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                \r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); // \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"\r",
+							"   pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/1203/CustomerAddresses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"1203",
+						"CustomerAddresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChangeDelivery",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"deliveryType\":\"StorePickUp\",\"collectionPointId\":{{collection_point}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/changeDelivery?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"changeDelivery"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchFirstProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"const firstProduct = jsonData[0];\r",
+							"\r",
+							"pm.environment.set(\"product_id_1\", firstProduct.productId);\r",
+							"pm.environment.set(\"lot_id_1\", firstProduct.lotId);\r",
+							"pm.environment.set(\"unit_id_1\", firstProduct.unitId);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFirstProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    const TOTAL_REQUESTS =3;\r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"SearchSecondProduct\"; \r",
+							"\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"    const productId1 = pm.environment.get(\"product_id_1\");\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/ProductCatalog/productsVariants?productIds=${productId1}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/ProductCatalog/lotsDetails?productIds[0]=${productId1}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/ProductCatalog/storeStocks?productIds=${productId1}&filters=`, header: requestHeaders }\r",
+							"      \r",
+							"\r",
+							"        \r",
+							"    ]; \r",
+							"\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"   pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_1}},\"lotId\":{{lot_id_1}},\"unitId\":{{unit_id_1}},\"quantity\":{{quantity_products_1}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchSecondProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"const firstProduct = jsonData[0];\r",
+							"\r",
+							"pm.environment.set(\"product_id_2\", firstProduct.productId);\r",
+							"pm.environment.set(\"lot_id_2\", firstProduct.lotId);\r",
+							"pm.environment.set(\"unit_id_2\", firstProduct.unitId);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_2}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddSecondProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_2}},\"lotId\":{{lot_id_2}},\"unitId\":{{unit_id_2}},\"quantity\":{{quantity_products_2}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSecondProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_2}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchThirdProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"const firstProduct = jsonData[0];\r",
+							"\r",
+							"pm.environment.set(\"product_id_3\", firstProduct.productId);\r",
+							"pm.environment.set(\"lot_id_3\", firstProduct.lotId);\r",
+							"pm.environment.set(\"unit_id_3\", firstProduct.unitId);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_3}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_3}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddThirdProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    // Jeśli nie, przerwij wykonywanie kolekcji\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_3}},\"lotId\":{{lot_id_3}},\"unitId\":{{unit_id_3}},\"quantity\":{{quantity_products_3}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetThirdProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_3}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_3}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchFourthProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"const firstProduct = jsonData[0];\r",
+							"\r",
+							"pm.environment.set(\"product_id_4\", firstProduct.productId);\r",
+							"pm.environment.set(\"lot_id_4\", firstProduct.lotId);\r",
+							"pm.environment.set(\"unit_id_4\", firstProduct.unitId);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_4}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_4}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddForuthProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_4}},\"lotId\":{{lot_id_4}},\"unitId\":{{unit_id_4}},\"quantity\":{{quantity_products_4}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFourthProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_4}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_4}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SaveAndAcceptSO",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var startTime = pm.environment.get(\"startTime\");\r",
+							"var endTime = new Date().getTime();\r",
+							"var totalTime = endTime - startTime;\r",
+							"\r",
+							"var seconds = Math.floor(totalTime / 1000);\r",
+							"var milliseconds = totalTime % 1000;\r",
+							"\r",
+							"console.log(\"Całkowity czas wykonania: \" + seconds + \".\" + milliseconds + \" s\");\r",
+							"pm.environment.set(\"totalExecutionTime\", totalTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/saveAndAccept?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"saveAndAccept"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AdvanceInvoiceValue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"salesOrderValue\", jsonData.result.salesOrderValue);\r",
+							"    pm.environment.set(\"newAdvanceInvoiceMaxValue\", jsonData.result.newAdvanceInvoiceMaxValue);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/advanceInvoicesValue?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"advanceInvoicesValue"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateASI",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"ASI_id\", jsonData.result.id);\r",
+							"\r",
+							"    pm.environment.set(\"ASI_Customer_Id\", jsonData.result.purchaserData.customer.id);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"salesOrderId\":{{document_id}},\"salesOrderValue\":{{salesOrderValue}},\"advanceInvoiceValue\":{{newAdvanceInvoiceMaxValue}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/create",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FewRequestParallel",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    const TOTAL_REQUESTS = 4; \r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"GetSOdocument\"; \r",
+							"\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"    const AsiCustomerId = pm.environment.get(\"ASI_Customer_Id\");\r",
+							"    const AsiDocumentId = pm.environment.get(\"ASI_id\");\r",
+							"\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Coupon/availableCoupons?pageSize=20&offset=0&searchPhrase=&customerId=${AsiCustomerId}&defaultUser=false`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/SalesOrder/getSalesOrderAttributeClasses`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/AdvanceInvoice?documentId=${AsiDocumentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Session/isLastSessionClosed/${posId}`, header: requestHeaders },\r",
+							"    ]; \r",
+							"\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        \r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"   pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/discountStructure?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"discountStructure"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSOdocument",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"value\", jsonData.result.value);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "changeValue",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    // Jeśli nie, przerwij wykonywanie kolekcji\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"\r",
+							"    const TOTAL_REQUESTS = 6; \r",
+							"    \r",
+							"    const NASTEPNY_REQUEST_W_KOLEKCJI = \"GetPaymentForms\"; \r",
+							"\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"    pm.environment.set(\"parallel_request_counter\", 0);\r",
+							"    console.log(\"First reqeust code 200. Set parameter to 'true'. Start of parallel requests.\");\r",
+							"\r",
+							"    const token = pm.environment.get(\"jwt_token\");\r",
+							"    const companyUnitId = pm.environment.get(\"Company_unit_id\");\r",
+							"    const posCode = pm.environment.get(\"Pos_code\");\r",
+							"    const posId = pm.environment.get(\"Pos_id\");\r",
+							"    const localHost = pm.environment.get(\"local_host\");\r",
+							"    const urlAddress = pm.environment.get(\"URL_Address\");\r",
+							"    const documentId = pm.environment.get(\"document_id\");\r",
+							"    const AsiCustomerId = pm.environment.get(\"ASI_Customer_Id\");\r",
+							"    const AsiDocumentId = pm.environment.get(\"ASI_id\");\r",
+							"\r",
+							"    const requestHeaders = {\r",
+							"        'Content-Type': 'application/json',\r",
+							"        'Authorization': 'Bearer ' + token,\r",
+							"        'company-unit-id': companyUnitId,\r",
+							"        'pos-code': posCode,\r",
+							"        'pos-id': posId,\r",
+							"        'Accept': '*/*',\r",
+							"        'Accept-Encoding': 'gzip, deflate, br',\r",
+							"        'Connection': 'keep-alive'\r",
+							"    };\r",
+							"\r",
+							"    const parallelRequests = [\r",
+							"        { method: 'POST', url: `${urlAddress}/api/v1/AdvanceInvoice/saveCreated?documentId=${AsiDocumentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/AdvanceInvoice?documentId=${AsiDocumentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Payments/${AsiDocumentId}`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/Vouchers/External/VoucherSorts`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/CashDocuments/Attributes`, header: requestHeaders },\r",
+							"        { method: 'GET', url: `${urlAddress}/api/v1/CashDocuments/TransactionDictonary`, header: requestHeaders },\r",
+							"    ];\r",
+							"    function checkCompletionAndDecideNextStep() {\r",
+							"        let count = parseInt(pm.environment.get(\"parallel_request_counter\") || 0);\r",
+							"        count++;\r",
+							"        pm.environment.set(\"parallel_request_counter\", count);\r",
+							"        console.log(`Request completed: ${count}/${TOTAL_REQUESTS}`);\r",
+							"\r",
+							"        if (count === TOTAL_REQUESTS) {\r",
+							"            console.log(\"All parallel requests have finished processing.\");\r",
+							"            \r",
+							"            const wasSuccessful = pm.environment.get(\"previousRequestSuccessful\");\r",
+							"\r",
+							"            if (wasSuccessful === true || wasSuccessful === \"true\") {\r",
+							"                console.log(\"All requests successful. Proceeding to next request:\", NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"                pm.execution.setNextRequest(NASTEPNY_REQUEST_W_KOLEKCJI);\r",
+							"            } else {\r",
+							"                console.error(\"One or more parallel requests failed. STOPPING COLLECTION.\");\r",
+							"                pm.execution.setNextRequest(null);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    parallelRequests.forEach(request => {\r",
+							"        pm.sendRequest(request, function (err, res) {\r",
+							"            \r",
+							"            if (err || res.code < 200 || res.code >= 300) {\r",
+							"                pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                console.error(`Some endpoint get an error ${request.url}. Set parameter to false.`, err || `Status: ${res.code}`);\r",
+							"            \r",
+							"            } else {\r",
+							"                console.log(`Response from ${request.url} - Status: ${res.code}, Time: ${res.responseTime}ms`);\r",
+							"                \r",
+							"                if (request.url.includes('isLastSessionClosed')) {\r",
+							"                    try {\r",
+							"                        const innerJson = res.json();\r",
+							"                        if (innerJson === true || (innerJson.result !== undefined && innerJson.result === true)) {\r",
+							"                            pm.environment.set(\"previousRequestSuccessful\", false); \r",
+							"                            console.error(`Endpoint responsed false w ${request.url}: Last session is closed so EOT.'.`);\r",
+							"                        }\r",
+							"                    } catch (e) { \r",
+							"                        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"                        console.error(`Error with parsing json file ${request.url}. EOT.`, e);\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"            \r",
+							"            checkCompletionAndDecideNextStep();\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"   pm.execution.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    console.error(\"First request was an error - EOT'.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"asPercentage\":false,\"value\":{{value}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/changeValue?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"changeValue"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPaymentForms",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstPaymentForm = jsonData[0];\r",
+							"    pm.environment.set(\"payment_form_id_1\", firstPaymentForm.paymentFormId)\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PaymentForms/PaymentFormsForDocument",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PaymentForms",
+						"PaymentFormsForDocument"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Payments",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Payments/{{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Payments",
+						"{{ASI_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SaveAndAcceptASI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/saveAndAccept?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"saveAndAccept"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCurrentSessionId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const responseText = pm.response.text();\r",
+							"    pm.environment.set(\"session_id\", responseText)\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/getCurrentSessionId/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"getCurrentSessionId",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateSessionData",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var startTime = pm.environment.get(\"startTime\");\r",
+							"var endTime = new Date().getTime();\r",
+							"var totalTime = endTime - startTime;\r",
+							"\r",
+							"var seconds = Math.floor(totalTime / 1000);\r",
+							"var milliseconds = totalTime % 1000;\r",
+							"\r",
+							"console.log(\"Całkowity czas wykonania: \" + seconds + \".\" + milliseconds + \" s\");\r",
+							"pm.environment.set(\"totalExecutionTime\", totalTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/updateSessionData/{{session_id}}/{{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"updateSessionData",
+						"{{session_id}}",
+						"{{ASI_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const urlAddress = pm.environment.get(\"URL_Address\");\r",
+					"const posCode = pm.environment.get(\"pos_code_jwt\");\r",
+					"const login = pm.environment.get(\"login_jwt\");\r",
+					"const password = pm.environment.get(\"password_jwt\");\r",
+					"\r",
+					"pm.sendRequest({\r",
+					"    url: `${urlAddress}/api/v1/Login/userauth/${posCode}`,\r",
+					"    method: 'POST',\r",
+					"    header: {'Content-Type': 'application/json'},\r",
+					"    body: {\r",
+					"        mode: 'raw',\r",
+					"        raw: JSON.stringify({\r",
+					"            \"loginName\": login,\r",
+					"            \"password\": password\r",
+					"        })\r",
+					"    }\r",
+					"}, function (err, res) {\r",
+					"    if (!err) {\r",
+					"        const jsonData = res.json();\r",
+					"        if (jsonData && jsonData.jwt && jsonData.jwt.jwtToken) {\r",
+					"            pm.environment.set(\"jwt_token\", jsonData.jwt.jwtToken);\r",
+					"        }\r",
+					"    }\r",
+					"});\r",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

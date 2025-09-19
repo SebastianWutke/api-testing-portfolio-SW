@@ -1,0 +1,14 @@
+[
+  {
+    "Pos_code": "XYZ1",
+    "Pos_id": "XYZ1",
+	"loyalty_card": "XYZ1",
+	"quantity_products_3": "2"
+  },
+  {
+    "Pos_code": "XYZ2",
+    "Pos_id": "XYZ2",
+	"loyalty_card": "XYZ2",
+	"quantity_products_3": "4"
+  }
+]

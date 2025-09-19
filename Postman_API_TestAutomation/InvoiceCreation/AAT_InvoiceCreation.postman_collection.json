@@ -1,0 +1,2629 @@
+{
+	"info": {
+		"_postman_id": "5711eedd-ad0d-4daa-83d9-3153b64db31f",
+		"name": "Automated API Testing - [Invoice Creation] - ANONYMIZED",
+	},
+	"item": [
+		{
+			"name": "0. Tworzenie paragonu",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = pm.response.text();",
+							"console.log(responseBody);",
+							"pm.environment.set(\"document_id\", responseBody);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"startTime\", new Date().getTime());",
+							"console.log(\"Czas rozpoczęcia: \" + new Date().toISOString());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument?stampId=1595",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument"
+					],
+					"query": [
+						{
+							"key": "stampId",
+							"value": "1595"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.5 Zmiana na Invoice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/{{document_id}}/changeCachedDocumentType?newDocumentType=SalesInvoice",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"{{document_id}}",
+						"changeCachedDocumentType"
+					],
+					"query": [
+						{
+							"key": "newDocumentType",
+							"value": "SalesInvoice"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCardTypes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Loyalty/cardTypes",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Loyalty",
+						"cardTypes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PutCard",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"    const jsonData = pm.response.json();",
+							"    pm.environment.set(\"customerId\", jsonData.customerId)",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/updateCachedDocumentLoyaltyCard/{{document_id}}?loyaltyCardNumber={{LoyaltyCard_Id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"updateCachedDocumentLoyaltyCard",
+						"{{document_id}}"
+					],
+					"query": [
+						{
+							"key": "loyaltyCardNumber",
+							"value": "{{LoyaltyCard_Id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PutCard Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/updateCachedDocumentCustomer/{{document_id}}/{{customerId}}?customerKind=Buyer&shouldRecalculate=false&keepCardDetails=false",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"updateCachedDocumentCustomer",
+						"{{document_id}}",
+						"{{customerId}}"
+					],
+					"query": [
+						{
+							"key": "customerKind",
+							"value": "Buyer"
+						},
+						{
+							"key": "shouldRecalculate",
+							"value": "false"
+						},
+						{
+							"key": "keepCardDetails",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.1 Get - search item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var firstProduct = jsonData[0];",
+							"var productCode = firstProduct.productCode;",
+							"pm.environment.set(\"productCode\", productCode);",
+							"console.log(\"productCode: \" + productCode);",
+							"var lotId = firstProduct.lotId;",
+							"pm.environment.set(\"lotId\", lotId);",
+							"console.log(\"lotId: \" + lotId);",
+							"var productName = firstProduct.productName;",
+							"pm.environment.set(\"productName\", productName);",
+							"console.log(\"productName: \" + productName);",
+							"var productNameVersion = firstProduct.productNameVersion;",
+							"pm.environment.set(\"productNameVersion\", productNameVersion);",
+							"console.log(\"productNameVersion: \" + productNameVersion);",
+							"var barcode = firstProduct.barcode;",
+							"pm.environment.set(\"barcode\", barcode);",
+							"console.log(\"barcode: \" + barcode);",
+							"var unitId = firstProduct.unitId;",
+							"pm.environment.set(\"unitId\", unitId);",
+							"console.log(\"unitId: \" + unitId);",
+							"var vatRateId = firstProduct.vatRateId;",
+							"pm.environment.set(\"vatRateId\", vatRateId);",
+							"console.log(\"vatRateId: \" + vatRateId);",
+							"var vatRateValue = firstProduct.vatRateValue;",
+							"pm.environment.set(\"vatRateValue\", vatRateValue);",
+							"console.log(\"vatRateValue: \" + vatRateValue);",
+							"var productId = firstProduct.productId;",
+							"pm.environment.set(\"productId\", productId);",
+							"console.log(\"productId: \" + productId);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase=88804",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "88804"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.2 Add #1 item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\"productEndPrice\":0,\"toPay\":0,\"productCode\":\"{{productCode}}\",\"productName\":\"{{productName}}\",\"productNameVersion\":{{productNameVersion}},\"ean\":\"{{barcode}}\",\"quantity\":1,\"quantityInBasicUnit\":1,\"unit\":\"pc\",\"vatRateValue\":{{vatRateValue}},\"currency\":\"EUR\",\"description\":\"\",\"lotId\":{{lotId}},\"features\":[],\"productId\":{{productId}}, \"currencyId\":1, \"unitId\":{{unitId}},\"vatRateId\":{{vatRateId}},\"assistantId\":95,\"pictureUrl\":null,\"unitPrecision\":0,\"productUnit\":{\"id\":67300,\"unitId\":{{unitId}},\"productId\":{{productId}},\"symbol\":\"pc\",\"isActive\":false,\"isBasic\":true,\"precision\":0,\"basicUnitPrecision\":0,\"numerator\":1,\"denominator\":1},\"attributes\":[],\"canEditName\":false}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/addItems/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"addItems",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.1 Get - search item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var zeroProduct = jsonData[0]",
+							"var product2id = zeroProduct.product2id",
+							"pm.environment.set(\"product2id\", zeroProduct.familyMembersIds[0]);",
+							"console.log(\"product2id: \" + zeroProduct.familyMembersIds[0]);",
+							"var product3id = zeroProduct.product3id",
+							"pm.environment.set(\"product3id\", zeroProduct.familyMembersIds[1]);",
+							"console.log(\"product3id: \" + zeroProduct.familyMembersIds[1]);",
+							"var firstProduct = jsonData[19];",
+							"var productCode = firstProduct.productCode;",
+							"pm.environment.set(\"productCode\", productCode);",
+							"console.log(\"productCode: \" + productCode);",
+							"var lotId = firstProduct.lotId;",
+							"pm.environment.set(\"lotId\", lotId);",
+							"console.log(\"lotId: \" + lotId);",
+							"var productName = firstProduct.productName;",
+							"pm.environment.set(\"productName\", productName);",
+							"console.log(\"productName: \" + productName);",
+							"var productNameVersion = firstProduct.productNameVersion;",
+							"pm.environment.set(\"productNameVersion\", productNameVersion);",
+							"console.log(\"productNameVersion: \" + productNameVersion);",
+							"var barcode = firstProduct.barcode;",
+							"pm.environment.set(\"barcode\", barcode);",
+							"console.log(\"barcode: \" + barcode);",
+							"var unitId = firstProduct.unitId;",
+							"pm.environment.set(\"unitId\", unitId);",
+							"console.log(\"unitId: \" + unitId);",
+							"var vatRateId = firstProduct.vatRateId;",
+							"pm.environment.set(\"vatRateId\", vatRateId);",
+							"console.log(\"vatRateId: \" + vatRateId);",
+							"var vatRateValue = firstProduct.vatRateValue;",
+							"pm.environment.set(\"vatRateValue\", vatRateValue);",
+							"console.log(\"vatRateValue: \" + vatRateValue);",
+							"var productId = firstProduct.productId;",
+							"pm.environment.set(\"productId\", productId);",
+							"console.log(\"productId: \" + productId);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase=WRA01",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "WRA01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.2 Get - product variants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.3 Get store stocks",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/storeStocks?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}&filters=",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"storeStocks"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						},
+						{
+							"key": "filters",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.4 Get attributes/features/family",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productFamilyLots/{{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productFamilyLots",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.5 Get pictures",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Picture/pictures/products?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Picture",
+						"pictures",
+						"products"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.2.6 Add #2 item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\"productEndPrice\":0,\"toPay\":0,\"productCode\":\"{{productCode}}\",\"productName\":\"{{productName}}\",\"productNameVersion\":{{productNameVersion}},\"ean\":\"{{barcode}}\",\"quantity\":1,\"quantityInBasicUnit\":1,\"unit\":\"pc\",\"vatRateValue\":{{vatRateValue}},\"currency\":\"EUR\",\"description\":\"\",\"lotId\":{{lotId}},\"features\":[{\"id\":108,\"featureName\":\"Colours\",\"featureValue\":\"Blue\"},{\"id\":65,\"featureName\":\"Length (F)\",\"featureValue\":\"32\"},{\"id\":66,\"featureName\":\"Size (F)\",\"featureValue\":\"27\"}],\"productId\":{{productId}},\"unitId\":{{unitId}},\"vatRateId\":{{vatRateId}},\"assistantId\":95,\"pictureUrl\":\"https://www.jeans24h.pl/10894-large_default/wrangler-straight-soft-blue-W28TJX386.jpg\",\"unitPrecision\":0,\"productUnit\":{\"id\":67886,\"unitId\":{{unitId}},\"productId\":{{productId}},\"symbol\":\"pc\",\"isActive\":false,\"isBasic\":true,\"precision\":0,\"basicUnitPrecision\":0,\"numerator\":1,\"denominator\":1},\"attributes\":[{\"attributeClassInternalName\":\"Colours\",\"attributeClassId\":108,\"attributeValue\":\"Blue\",\"attributeType\":\"List\",\"listValueId\":162,\"modificationDate\":\"2025-03-03T06:08:38.508Z\",\"objectId\":-1,\"objectTypeId\":111,\"isMultiValue\":false}],\"canEditName\":false}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/addItems/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"addItems",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.1 Get - search item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var zeroProduct = jsonData[0]",
+							"var product2id = zeroProduct.product2id",
+							"pm.environment.set(\"product2id\", zeroProduct.familyMembersIds[0]);",
+							"console.log(\"product2id: \" + zeroProduct.familyMembersIds[0]);",
+							"var product3id = zeroProduct.product3id",
+							"pm.environment.set(\"product3id\", zeroProduct.familyMembersIds[1]);",
+							"console.log(\"product3id: \" + zeroProduct.familyMembersIds[1]);",
+							"var firstProduct = jsonData[0];",
+							"var productCode = firstProduct.productCode;",
+							"pm.environment.set(\"productCode\", productCode);",
+							"console.log(\"productCode: \" + productCode);",
+							"var lotId = firstProduct.lotId;",
+							"pm.environment.set(\"lotId\", lotId);",
+							"console.log(\"lotId: \" + lotId);",
+							"var productName = firstProduct.productName;",
+							"pm.environment.set(\"productName\", productName);",
+							"console.log(\"productName: \" + productName);",
+							"var productNameVersion = firstProduct.productNameVersion;",
+							"pm.environment.set(\"productNameVersion\", productNameVersion);",
+							"console.log(\"productNameVersion: \" + productNameVersion);",
+							"var barcode = firstProduct.barcode;",
+							"pm.environment.set(\"barcode\", barcode);",
+							"console.log(\"barcode: \" + barcode);",
+							"var unitId = firstProduct.unitId;",
+							"pm.environment.set(\"unitId\", unitId);",
+							"console.log(\"unitId: \" + unitId);",
+							"var vatRateId = firstProduct.vatRateId;",
+							"pm.environment.set(\"vatRateId\", vatRateId);",
+							"console.log(\"vatRateId: \" + vatRateId);",
+							"var vatRateValue = firstProduct.vatRateValue;",
+							"pm.environment.set(\"vatRateValue\", vatRateValue);",
+							"console.log(\"vatRateValue: \" + vatRateValue);",
+							"var productId = firstProduct.productId;",
+							"pm.environment.set(\"productId\", productId);",
+							"console.log(\"productId: \" + productId);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase=99901",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "99901"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.2 Get - product variants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.3. Get store stocks",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/storeStocks?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}&filters=",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"storeStocks"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						},
+						{
+							"key": "filters",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.4 Get attributes/features",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productFamilyLots/{{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productFamilyLots",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.5 Get pictures",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Picture/pictures/products?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Picture",
+						"pictures",
+						"products"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.3.6 Add #3 item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\"productEndPrice\":0,\"toPay\":0,\"productCode\":\"99901\",\"productName\":\"Adidas Soccer Shoes (black)\",\"productNameVersion\":1,\"ean\":\"3301317799432\",\"quantity\":1,\"quantityInBasicUnit\":1,\"unit\":\"pc\",\"vatRateValue\":0.19,\"currency\":\"EUR\",\"description\":\"\",\"lotId\":42396,\"features\":[{\"id\":100,\"featureName\":\"Shoes Color\",\"featureValue\":\"#000000\"},{\"id\":56,\"featureName\":\"ShoeMaterial\",\"featureValue\":\"Fabric\"},{\"id\":57,\"featureName\":\"SizeShoe\",\"featureValue\":\"43\"}],\"productId\":42381,\"unitId\":27,\"vatRateId\":379,\"assistantId\":95,\"pictureUrl\":null,\"unitPrecision\":0,\"productUnit\":{\"id\":67849,\"unitId\":27,\"productId\":42381,\"symbol\":\"pc\",\"isActive\":false,\"isBasic\":true,\"precision\":0,\"basicUnitPrecision\":0,\"numerator\":1,\"denominator\":1},\"attributes\":[{\"attributeClassInternalName\":\"Shoes Color\",\"attributeClassId\":100,\"attributeValue\":\"#000000\",\"attributeType\":\"List\",\"listValueId\":130,\"modificationDate\":\"2025-03-03T06:11:18.513Z\",\"objectId\":-1,\"objectTypeId\":111,\"isMultiValue\":false}],\"canEditName\":false}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/addItems/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"addItems",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.1 Get - search item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var zeroProduct = jsonData[0]",
+							"var product2id = zeroProduct.product2id",
+							"pm.environment.set(\"product2id\", zeroProduct.familyMembersIds[0]);",
+							"console.log(\"product2id: \" + zeroProduct.familyMembersIds[0]);",
+							"var product3id = zeroProduct.product3id",
+							"pm.environment.set(\"product3id\", zeroProduct.familyMembersIds[1]);",
+							"console.log(\"product3id: \" + zeroProduct.familyMembersIds[1]);",
+							"var firstProduct = jsonData[0];",
+							"var productCode = firstProduct.productCode;",
+							"pm.environment.set(\"productCode\", productCode);",
+							"console.log(\"productCode: \" + productCode);",
+							"var lotId = firstProduct.lotId;",
+							"pm.environment.set(\"lotId\", lotId);",
+							"console.log(\"lotId: \" + lotId);",
+							"var productName = firstProduct.productName;",
+							"pm.environment.set(\"productName\", productName);",
+							"console.log(\"productName: \" + productName);",
+							"var productNameVersion = firstProduct.productNameVersion;",
+							"pm.environment.set(\"productNameVersion\", productNameVersion);",
+							"console.log(\"productNameVersion: \" + productNameVersion);",
+							"var barcode = firstProduct.barcode;",
+							"pm.environment.set(\"barcode\", barcode);",
+							"console.log(\"barcode: \" + barcode);",
+							"var unitId = firstProduct.unitId;",
+							"pm.environment.set(\"unitId\", unitId);",
+							"console.log(\"unitId: \" + unitId);",
+							"var vatRateId = firstProduct.vatRateId;",
+							"pm.environment.set(\"vatRateId\", vatRateId);",
+							"console.log(\"vatRateId: \" + vatRateId);",
+							"var vatRateValue = firstProduct.vatRateValue;",
+							"pm.environment.set(\"vatRateValue\", vatRateValue);",
+							"console.log(\"vatRateValue: \" + vatRateValue);",
+							"var productId = firstProduct.productId;",
+							"pm.environment.set(\"productId\", productId);",
+							"console.log(\"productId: \" + productId);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase=SWA03",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "SWA03"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.2 Get - product variants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.3 Get store stocks",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/storeStocks?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}&filters=",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"storeStocks"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						},
+						{
+							"key": "filters",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.4 Get attributes/features",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productFamilyLots/{{productId}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productFamilyLots",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.5 Get pictures",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Picture/pictures/products?productIds={{productId}}&productIds={{product2id}}&productIds={{product3id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Picture",
+						"pictures",
+						"products"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product2id}}"
+						},
+						{
+							"key": "productIds",
+							"value": "{{product3id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.4.6  Add #4 item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\"productEndPrice\":0,\"toPay\":0,\"productCode\":\"SWA03\",\"productName\":\"SWA03\",\"productNameVersion\":1,\"ean\":\"3342789401508\",\"quantity\":1,\"quantityInBasicUnit\":1,\"unit\":\"pc\",\"vatRateValue\":0.19,\"currency\":\"EUR\",\"description\":\"\",\"lotId\":42803,\"features\":[{\"id\":100,\"featureName\":\"Shoes Color\",\"featureValue\":\"#808080\"},{\"id\":118,\"featureName\":\"xxtestxx\",\"featureValue\":\"abcooop\"},{\"id\":56,\"featureName\":\"ShoeMaterial\",\"featureValue\":\"Fabric\"},{\"id\":57,\"featureName\":\"SizeShoe\",\"featureValue\":\"41\"}],\"productId\":42813,\"unitId\":27,\"vatRateId\":379,\"assistantId\":95,\"pictureUrl\":null,\"unitPrecision\":0,\"productUnit\":{\"id\":67938,\"unitId\":27,\"productId\":42813,\"symbol\":\"pc\",\"isActive\":false,\"isBasic\":true,\"precision\":0,\"basicUnitPrecision\":0,\"numerator\":1,\"denominator\":1},\"attributes\":[{\"attributeClassInternalName\":\"Shoes Color\",\"attributeClassId\":100,\"attributeValue\":\"#808080\",\"attributeType\":\"List\",\"listValueId\":130,\"modificationDate\":\"2025-03-03T06:12:26.613Z\",\"objectId\":-1,\"objectTypeId\":111,\"isMultiValue\":false},{\"attributeClassInternalName\":\"xxtestxx\",\"attributeClassId\":118,\"attributeValue\":\"abcooop\",\"attributeType\":\"List\",\"listValueId\":177,\"modificationDate\":\"2025-03-03T06:12:26.613Z\",\"objectId\":-1,\"objectTypeId\":111,\"isMultiValue\":false}],\"canEditName\":false}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/addItems/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"addItems",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Move to payment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/{{document_id}}/saveCreated?type=Receipt",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"{{document_id}}",
+						"saveCreated"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "Receipt"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.1. Amount to pay",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"var amount = jsonData.amount;",
+							"pm.environment.set(\"amount\", amount);",
+							"console.log(\"Zapisana wartość amount: \" + amount);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Payments/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Payments",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Payment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":1,\"currencyId\":1,\"amount\":{{amount}},\"posId\":{{Pos_id}},\"voucherSortId\":1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Payments/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Payments",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Accept",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);",
+							"});",
+							"if (pm.response.code !== 200) {",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/{{document_id}}/accept",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"{{document_id}}",
+						"accept"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.5 Get Session ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let sessionId = pm.response.text();",
+							"pm.environment.set(\"Session_Id\", sessionId);",
+							"console.log(\"Session_Id:\", sessionId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/getCurrentSessionId/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"getCurrentSessionId",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Session update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var startTime = pm.environment.get(\"startTime\");",
+							"var endTime = new Date().getTime();",
+							"var totalTime = endTime - startTime;",
+							"var seconds = Math.floor(totalTime / 1000);",
+							"var milliseconds = totalTime % 1000;",
+							"console.log(\"Całkowity czas wykonania: \" + seconds + \".\" + milliseconds + \" s\");",
+							"pm.environment.set(\"totalExecutionTime\", totalTime);",
+							"pm.test(\"Czas wykonania całej kolekcji\", function() {",
+							"    console.log(\"Całkowity czas wykonania: \" + totalTime + \" ms\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {",
+							"    pm.execution.setNextRequest(null);",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "{{URL_Address}}/webpos-poc/createNewDocument",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/updateSessionData/{{Session_Id}}/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"updateSessionData",
+						"{{Session_Id}}",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.sendRequest({",
+					"    url: '{{URL_Address}}/api/v1/Login/userauth/{{Pos_code_login}}',",
+					"    method: 'POST',",
+					"    header: {'Content-Type': 'application/json'},",
+					"    body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify({",
+					"            \"loginName\": \"{{Login}}\",",
+					"            \"password\": \"{{Password}}\"",
+					"        })",
+					"    }",
+					"}, function (err, res) {",
+					"    if (!err) {",
+					"        const jsonData = res.json();",
+					"        if (jsonData && jsonData.jwt && jsonData.jwt.jwtToken) {",
+					"            pm.environment.set(\"jwt_token\", jsonData.jwt.jwtToken);",
+					"        }",
+					"    }",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,767 @@
+{
+	"info": {
+		"_postman_id": "0c1c783b-e1c0-44fa-ba80-30f613dfd29a",
+		"name": "Loging(withCloudMailexample)",
+	},
+	"item": [
+		{
+			"name": "Get Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/app-poc/login",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"app-poc",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get translation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Translations/merged/en",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Translations",
+						"merged",
+						"en"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AppVersion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AppVersion",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AppVersion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var codeValue = pm.response.json().code;\r",
+							"pm.environment.set(\"POS_CODE\", codeValue);\r",
+							"\r",
+							"console.log(\"Zapisana zmienna POS_CODE:\", pm.collectionVariables.get(\"POS_CODE\"));\r",
+							"\r",
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/address/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"address",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logowanie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Is login successful?\", function() {\r",
+							"    const result = pm.response.json().result;\r",
+							"    pm.expect(result).to.eql(\"LoginSuccessful\");\r",
+							"    if (result !== \"LoginSuccessful\") {\r",
+							"        throw new Error(\"Błędne dane logowania lub brak połączenia\");\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"var USER_ID = pm.response.json().userId;\r",
+							"pm.environment.set(\"USER_ID\", USER_ID);\r",
+							"\r",
+							"var JWT_TOKEN = pm.response.json().jwt.jwtToken;\r",
+							"pm.environment.set(\"JWT_TOKEN\", JWT_TOKEN);\r",
+							"\r",
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.json().result === \"LoginSuccessful\") {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"loginName\":\"{{Login}}\",\"password\":\"{{Password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Login/userauth/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Login",
+						"userauth",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var guid = pm.response.json().guid;\r",
+							"pm.environment.set(\"guid\", guid);\r",
+							"\r",
+							"console.log(\"Zapisana zmienna guid:\", pm.environment.get(\"guid\"));\r",
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{LocalHost_Address}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{LocalHost_Address}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PointOfSales",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get POS data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							"\r",
+							"var POS_ID = pm.response.json().id;\r",
+							"pm.environment.set(\"POS_ID\", POS_ID);\r",
+							"console.log(\"POS_ID ustawione na:\", POS_ID);\r",
+							"\r",
+							"var COMPANY_UNIT_ID = pm.response.json().companyUnitId;\r",
+							"pm.environment.set(\"COMPANY_UNIT_ID\", COMPANY_UNIT_ID);\r",
+							"console.log(\"COMPANY_UNIT_ID ustawione na:\", COMPANY_UNIT_ID);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/{{POS_CODE}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"{{POS_CODE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get forBrowserStorage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check wheter is okey if not send mail\r",
+							"if (pm.response.code >= 200 && pm.response.code < 300) {\r",
+							"} else {\r",
+							"    pm.execution.setNextRequest(\"Wysyłka maila - failed\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "pos-id",
+						"value": "{{POS_ID}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{POS_CODE}}",
+						"type": "text"
+					},
+					{
+						"key": "company-unit-id",
+						"value": "{{COMPANY_UNIT_ID}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\":\"{{POS_CODE}}\",\"guid\":\"{{guid}}}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/forBrowserStorage",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"forBrowserStorage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wysyłka maila - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"postman.setNextRequest(null);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/gmail.send",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "clientSecretCode",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "clientId",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"raw\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+					"protocol": "https",
+					"host": [
+						"gmail",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"gmail",
+						"v1",
+						"users",
+						"me",
+						"messages",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wysyłka maila - failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"postman.setNextRequest(null);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authUrl",
+							"value": "https://accounts.google.com/o/oauth2",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://oauth2.googleapis.com/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://www.googleapis.com/auth/gmail.send",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ClientSecretCode",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "ClientId",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.pstmn.io/v1/callback",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"raw\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+					"protocol": "https",
+					"host": [
+						"gmail",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"gmail",
+						"v1",
+						"users",
+						"me",
+						"messages",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "POS_CODE",
+			"value": "POS-CODE"
+		},
+		{
+			"key": "USER_ID",
+			"value": ""
+		},
+		{
+			"key": "JWT_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "guid",
+			"value": ""
+		},
+		{
+			"key": "POS_ID",
+			"value": ""
+		},
+		{
+			"key": "COMPANY_UNIT_ID",
+			"value": ""
+		}
+	]
+}

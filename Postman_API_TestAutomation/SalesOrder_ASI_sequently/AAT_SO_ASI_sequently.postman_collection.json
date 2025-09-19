@@ -1,0 +1,5822 @@
+{
+	"info": {
+		"_postman_id": "f650914c-5a6d-4421-9b89-57996e7b66c4",
+		"name": "Automated API Testing - [Sales Orders + ASi Creation] - sequently",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+},
+	"item": [
+		{
+			"name": "getSalesOrderAttributeClasses",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"startTime\", new Date().getTime());\r",
+							"console.log(\"Czas rozpoczęcia: \" + new Date().toISOString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrdersFilters",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrdersFilters",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrdersFilters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "isLastSessionClosed",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/isLastSessionClosed/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"isLastSessionClosed",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWorkstationInfo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{local_host}}/DeviceServer/GetWorkstationInfo",
+					"host": [
+						"{{local_host}}"
+					],
+					"path": [
+						"DeviceServer",
+						"GetWorkstationInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get address for POS",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PointOfSales/address/{{pos-code}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PointOfSales",
+						"address",
+						"{{pos-code}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "anyNewSalesOrdersExistOnline",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/anyNewSalesOrdersExistOnline",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"anyNewSalesOrdersExistOnline"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrdersRows",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"page\":1,\"pageSize\":50,\"sortColumn\":\"ConfirmationDate\",\"sortDirection\":\"Descending\",\"salesOrderRowColumns\":[\"DocumentNumber\",\"AffectedDocuments\",\"ReferenceNumber\",\"ConfirmationDate\",\"Delivery\",\"DeliveryStatus\",\"DeliveryDate\",\"CustomerName\",\"Amount\",\"Status\"],\"attributeClassIdsAsColumns\":[145,147,146,148],\"filters\":{\"searchMode\":\"MyStore\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrdersRows",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrdersRows"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getParkedSalesOrdersRows",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"page\":1,\"pageSize\":50,\"sortColumn\":\"ConfirmationDate\",\"sortDirection\":\"Descending\",\"salesOrderRowColumns\":[\"DocumentNumber\",\"AffectedDocuments\",\"ReferenceNumber\",\"ConfirmationDate\",\"Delivery\",\"DeliveryStatus\",\"DeliveryDate\",\"CustomerName\",\"Amount\",\"Status\"],\"attributeClassIdsAsColumns\":[145,147,146,148],\"filters\":{\"searchMode\":\"MyStore\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getParkedSalesOrdersRows",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getParkedSalesOrdersRows"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get currency",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Currency/system",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Currency",
+						"system"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get CachedPermissions",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/User/cachedPermissions/SalesOrder",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"User",
+						"cachedPermissions",
+						"SalesOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrderAttributeClasses",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sales Order Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    \r",
+							"    const jsonData = pm.response.json();\r",
+							"    const isSuccess = jsonData.isSuccess;\r",
+							"\r",
+							"    pm.test(\"Is document correctly created?\", function(){\r",
+							"    pm.expect(isSuccess).to.be.true;\r",
+							"    });\r",
+							"\r",
+							"    if (isSuccess === true) {\r",
+							"        pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"        const resultId = jsonData.result.id;\r",
+							"        pm.environment.set(\"document_id\", resultId);\r",
+							"        console.log(\"Is document correctly created?\", isSuccess);\r",
+							"        console.log(\"Created document id:\", resultId);\r",
+							"    }\r",
+							"\r",
+							"    else {\r",
+							"        pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"        console.warn(\"Endpoint returned success status, but backend message was isSuccess set as false.\")\r",
+							"    }\r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Last request was not passed - EOT\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/create",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrderAttributeClasses_2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getDeliveryDate",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/byNameAndPos/DeliveryDateModeForSalesOrders/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"byNameAndPos",
+						"DeliveryDateModeForSalesOrders",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IsExternalPicpupPointEnabled",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/byNameAndPos/EnableExternalPickupPoint/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"byNameAndPos",
+						"EnableExternalPickupPoint",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IsCourierParcelEnabled",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Settings/byNameAndPos/EnableCourierParcel/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Settings",
+						"byNameAndPos",
+						"EnableCourierParcel",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSalesOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetMaxUserDiscount",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/TradeDocument/settings/maxUserDiscount",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"TradeDocument",
+						"settings",
+						"maxUserDiscount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "isLastSessionClosed_2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/isLastSessionClosed/371",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"isLastSessionClosed",
+						"371"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getSalesOrdersFilters_2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrdersFilters",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrdersFilters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDiscountStructure",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/discountStructure?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"discountStructure"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDiscountEngineBundles",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/DiscountEngine/bundles/{{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"DiscountEngine",
+						"bundles",
+						"{{document_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "StorePickups",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"searchPhrase\":null,\"sortDirection\":null,\"sortColumn\":null}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/storePickups",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"storePickups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAvailableCoupons",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Coupon/availableCoupons?pageSize=20&offset=0&searchPhrase=&customerId=87&defaultUser=true",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Coupon",
+						"availableCoupons"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "searchPhrase",
+							"value": ""
+						},
+						{
+							"key": "customerId",
+							"value": "87"
+						},
+						{
+							"key": "defaultUser",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCardTypes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Loyalty/cardTypes",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Loyalty",
+						"cardTypes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddLoyaltyCard",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/updateDocumentLoyaltyCard?loyaltyCardNumber={{loyalty_card}}&documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"updateDocumentLoyaltyCard"
+					],
+					"query": [
+						{
+							"key": "loyaltyCardNumber",
+							"value": "{{loyalty_card}}"
+						},
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLoyaltyCardInformation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"customerId\", jsonData.customerId);\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/LoyaltyCardInformationByLoyaltyCard/{{loyalty_card}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"LoyaltyCardInformationByLoyaltyCard",
+						"{{loyalty_card}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChangeCustomer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"customer_guid\", jsonData.result.purchaserData.guid);\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/changeCustomer?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"changeCustomer"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCustomerAddresses",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/1203/CustomerAddresses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"1203",
+						"CustomerAddresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAddressTypes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/AddressTypes",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"AddressTypes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCountries",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/Countries",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"Countries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFieldValidationMasks",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/FieldValidationMasks?CustomerColumnsToValidate=ZipCode&CustomerColumnsToValidate=City&CustomerColumnsToValidate=Street&CustomerColumnsToValidate=BuildingNumber",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"FieldValidationMasks"
+					],
+					"query": [
+						{
+							"key": "CustomerColumnsToValidate",
+							"value": "ZipCode"
+						},
+						{
+							"key": "CustomerColumnsToValidate",
+							"value": "City"
+						},
+						{
+							"key": "CustomerColumnsToValidate",
+							"value": "Street"
+						},
+						{
+							"key": "CustomerColumnsToValidate",
+							"value": "BuildingNumber"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCustomerData",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"customerId\":{{customerId}},\"customerKind\":\"Buyer\",\"recalculate\":false,\"keepCardDetails\":false}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Customers/{{customerId}}?customerGuid={{customer_guid}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Customers",
+						"{{customerId}}"
+					],
+					"query": [
+						{
+							"key": "customerGuid",
+							"value": "{{customer_guid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "StorePickups",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"sortDirection\":\"Ascending\",\"sortColumn\":\"Name\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/storePickups",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"storePickups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChangeDelivery",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"deliveryType\":\"StorePickUp\",\"collectionPointId\":{{collection_point}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/changeDelivery?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"changeDelivery"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchFirstProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstProduct = jsonData[0];\r",
+							"\r",
+							"    pm.environment.set(\"product_id_1\", firstProduct.productId);\r",
+							"    pm.environment.set(\"lot_id_1\", firstProduct.lotId);\r",
+							"    pm.environment.set(\"unit_id_1\", firstProduct.unitId);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFirstProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_1}},\"lotId\":{{lot_id_1}},\"unitId\":{{unit_id_1}},\"quantity\":{{quantity_products_1}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFirstProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_1}},\"lotId\":{{lot_id_1}},\"unitId\":{{unit_id_1}},\"quantity\":{{quantity_products_1}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_1}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFirstProductLotsDetails",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_1}},\"lotId\":{{lot_id_1}},\"unitId\":{{unit_id_1}},\"quantity\":{{quantity_products_1}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lotsDetails?productIds[0]={{product_id_1}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lotsDetails"
+					],
+					"query": [
+						{
+							"key": "productIds[0]",
+							"value": "{{product_id_1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFirstProductStoreStocks",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_1}},\"lotId\":{{lot_id_1}},\"unitId\":{{unit_id_1}},\"quantity\":{{quantity_products_1}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/storeStocks?productIds={{product_id_1}}&filters=",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"storeStocks"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_1}}"
+						},
+						{
+							"key": "filters",
+							"value": ""
+						},
+						{
+							"key": "kekko",
+							"value": "sd",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchSecondProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstProduct = jsonData[0];\r",
+							"\r",
+							"    pm.environment.set(\"product_id_2\", firstProduct.productId);\r",
+							"    pm.environment.set(\"lot_id_2\", firstProduct.lotId);\r",
+							"    pm.environment.set(\"unit_id_2\", firstProduct.unitId);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_2}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddSecondProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_2}},\"lotId\":{{lot_id_2}},\"unitId\":{{unit_id_2}},\"quantity\":{{quantity_products_2}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSecondProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_2}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchThirdProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstProduct = jsonData[0];\r",
+							"\r",
+							"    pm.environment.set(\"product_id_3\", firstProduct.productId);\r",
+							"    pm.environment.set(\"lot_id_3\", firstProduct.lotId);\r",
+							"    pm.environment.set(\"unit_id_3\", firstProduct.unitId);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_3}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_3}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddThirdProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_3}},\"lotId\":{{lot_id_3}},\"unitId\":{{unit_id_3}},\"quantity\":{{quantity_products_3}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetThirdProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_3}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_3}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchFourthProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstProduct = jsonData[0];\r",
+							"\r",
+							"    pm.environment.set(\"product_id_4\", firstProduct.productId);\r",
+							"    pm.environment.set(\"lot_id_4\", firstProduct.lotId);\r",
+							"    pm.environment.set(\"unit_id_4\", firstProduct.unitId);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/lots?page=1&pageSize=20&addPagination=false&searchPhrase={{product_code_4}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"lots"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "addPagination",
+							"value": "false"
+						},
+						{
+							"key": "searchPhrase",
+							"value": "{{product_code_4}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddForuthProduct",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"productId\":{{product_id_4}},\"lotId\":{{lot_id_4}},\"unitId\":{{unit_id_4}},\"quantity\":{{quantity_products_4}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/addItem?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"addItem"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFourthProductVariants",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/ProductCatalog/productsVariants?productIds={{product_id_4}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ProductCatalog",
+						"productsVariants"
+					],
+					"query": [
+						{
+							"key": "productIds",
+							"value": "{{product_id_4}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SaveAndAcceptSO",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/saveAndAccept?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"saveAndAccept"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AdvanceInvoiceValue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"salesOrderValue\", jsonData.result.salesOrderValue);\r",
+							"    pm.environment.set(\"newAdvanceInvoiceMaxValue\", jsonData.result.newAdvanceInvoiceMaxValue);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/advanceInvoicesValue?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"advanceInvoicesValue"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateASI",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"ASI_id\", jsonData.result.id);\r",
+							"\r",
+							"    pm.environment.set(\"ASI_Customer_Id\", jsonData.result.purchaserData.customer.id);\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"salesOrderId\":{{document_id}},\"salesOrderValue\":{{salesOrderValue}},\"advanceInvoiceValue\":{{newAdvanceInvoiceMaxValue}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/create",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DiscountStructure",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/discountStructure?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"discountStructure"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAvailableCoupons",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Coupon/availableCoupons?pageSize=20&offset=0&searchPhrase=&customerId={{ASI_Customer_Id}}&defaultUser=false",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Coupon",
+						"availableCoupons"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "searchPhrase",
+							"value": ""
+						},
+						{
+							"key": "customerId",
+							"value": "{{ASI_Customer_Id}}"
+						},
+						{
+							"key": "defaultUser",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSOAttributeClasses",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder/getSalesOrderAttributeClasses",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder",
+						"getSalesOrderAttributeClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetASI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IsLastSessionClosed_3",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/isLastSessionClosed/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"isLastSessionClosed",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSOdocument",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"value\", jsonData.result.value);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/SalesOrder?documentId={{document_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"SalesOrder"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{document_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "changeValue",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"asPercentage\":false,\"value\":{{value}}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/changeValue?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"changeValue"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "saveCreated",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/saveCreated?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"saveCreated"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetASI_2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPayments",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"// Jeśli test nie przejdzie, ustaw zmienną na false\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Payments/{{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Payments",
+						"{{ASI_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPaymentForms",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const firstPaymentForm = jsonData[0];\r",
+							"    pm.environment.set(\"payment_form_id_1\", firstPaymentForm.paymentFormId)\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/PaymentForms/PaymentFormsForDocument",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"PaymentForms",
+						"PaymentFormsForDocument"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetVoucherSorts",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Vouchers/External/VoucherSorts",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Vouchers",
+						"External",
+						"VoucherSorts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCashDocumentsAttributes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/CashDocuments/Attributes",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"CashDocuments",
+						"Attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTransactionDictonary",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/CashDocuments/TransactionDictonary",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"CashDocuments",
+						"TransactionDictonary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Payments",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Payments/{{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Payments",
+						"{{ASI_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SaveAndAcceptASI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", true);\r",
+							"});\r",
+							"\r",
+							"if (pm.response.code !== 200) {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/AdvanceInvoice/saveAndAccept?documentId={{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"AdvanceInvoice",
+						"saveAndAccept"
+					],
+					"query": [
+						{
+							"key": "documentId",
+							"value": "{{ASI_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCurrentSessionId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.test(\"Status code is 200 (Success)\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    const responseText = pm.response.text();\r",
+							"    pm.environment.set(\"session_id\", responseText)\r",
+							"\r",
+							" \r",
+							"} else {\r",
+							"    pm.environment.set(\"previousRequestSuccessful\", false);\r",
+							"    pm.test(`Expected status 200 but got ${pm.response.code}`, function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    console.warn(`There is some error in this endPoint. Status code: ${pm.response.code}`);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/getCurrentSessionId/{{Pos_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"getCurrentSessionId",
+						"{{Pos_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateSessionData",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (!pm.environment.get(\"previousRequestSuccessful\")) {\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"    console.log(\"Poprzednie żądanie nie powiodło się, przerywam wykonywanie kolekcji\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var startTime = pm.environment.get(\"startTime\");\r",
+							"var endTime = new Date().getTime();\r",
+							"var totalTime = endTime - startTime;\r",
+							"\r",
+							"var seconds = Math.floor(totalTime / 1000);\r",
+							"var milliseconds = totalTime % 1000;\r",
+							"\r",
+							"console.log(\"Całkowity czas wykonania: \" + seconds + \".\" + milliseconds + \" s\");\r",
+							"pm.environment.set(\"totalExecutionTime\", totalTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "company-unit-id",
+						"value": "{{Company_unit_id}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-code",
+						"value": "{{Pos_code}}",
+						"type": "text"
+					},
+					{
+						"key": "pos-id",
+						"value": "{{Pos_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"paymentFormId\":{{payment_form_id_1}},\"currencyId\":1,\"amount\":{{value}},\"posId\":{{Pos_id}},\"voucherSortId\":1,\"paymentType\":\"Revenue\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_Address}}/api/v1/Session/updateSessionData/{{session_id}}/{{ASI_id}}",
+					"host": [
+						"{{URL_Address}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Session",
+						"updateSessionData",
+						"{{session_id}}",
+						"{{ASI_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const urlAddress = pm.environment.get(\"URL_Address\");\r",
+					"const posCode = pm.environment.get(\"pos_code_jwt\");\r",
+					"const login = pm.environment.get(\"login_jwt\");\r",
+					"const password = pm.environment.get(\"password_jwt\");\r",
+					"\r",
+					"pm.sendRequest({\r",
+					"    url: `${urlAddress}/api/v1/Login/userauth/${posCode}`,\r",
+					"    method: 'POST',\r",
+					"    header: {'Content-Type': 'application/json'},\r",
+					"    body: {\r",
+					"        mode: 'raw',\r",
+					"        raw: JSON.stringify({\r",
+					"            \"loginName\": login,\r",
+					"            \"password\": password\r",
+					"        })\r",
+					"    }\r",
+					"}, function (err, res) {\r",
+					"    if (!err) {\r",
+					"        const jsonData = res.json();\r",
+					"        if (jsonData && jsonData.jwt && jsonData.jwt.jwtToken) {\r",
+					"            pm.environment.set(\"jwt_token\", jsonData.jwt.jwtToken);\r",
+					"        }\r",
+					"    }\r",
+					"});\r",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

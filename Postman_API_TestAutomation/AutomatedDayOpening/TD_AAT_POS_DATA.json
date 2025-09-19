@@ -1,0 +1,12 @@
+[
+  {
+    "POS_CODE": "Some_POS_Code_1",
+    "POS_ID": "id_1",
+    "guid": "guid_1"
+  },
+  {
+    "POS_CODE": "Some_POS_Code_2",
+    "POS_ID": "id_2",
+    "guid": "guid_2"
+  }
+]
